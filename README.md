@@ -5,7 +5,7 @@
 ## 📋 项目声明
 
 本项目由阿里云 ESA 提供加速、计算和保护
-![阿里云ESA](https://github.com/Ayj2004/poem/main/src/assets/aliyun.png)
+![阿里云ESA](https://github.com/Ayj2004/poem/blob/main/src/assets/aliyun.png)
 
 ## ✨ 核心特性
 
