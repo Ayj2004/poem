@@ -1,37 +1,37 @@
 <template>
   <div class="mb-8 flex flex-wrap gap-2">
-    <!-- 全部诗歌按钮 -->
+    <!-- 全部诗歌按钮（红棕色主色） -->
     <button
       class="px-4 py-2 rounded-md transition-colors duration-200"
       :style="{
         backgroundColor:
           activeTheme === 'all'
-            ? '#165DFF' // 全部按钮固定主色
-            : '#f5f5f5',
-        color: activeTheme === 'all' ? '#ffffff' : '#333333',
-        border: activeTheme === 'all' ? 'none' : '1px solid #e5e7eb',
+            ? '#8b4513' // 红棕色主色（替换原蓝色）
+            : '#f9f2ed', // 浅红棕背景（替换原浅灰）
+        color: activeTheme === 'all' ? '#ffffff' : '#5c371e', // 深棕文字
+        border: activeTheme === 'all' ? 'none' : '1px solid #e8d8c8', // 红棕边框
       }"
       @click="handleSelectTheme('all')"
     >
       全部诗歌
     </button>
 
-    <!-- 动态题材按钮（每个题材独立颜色） -->
+    <!-- 动态题材按钮（红棕色系内变化） -->
     <button
       v-for="theme in themes"
       :key="theme"
       class="px-4 py-2 rounded-md transition-colors duration-200"
       :style="{
-        // 选中态：深色主色；默认态：浅色背景
+        // 选中态：深棕；默认态：浅红棕背景
         backgroundColor:
           activeTheme === theme
             ? getThemeColor(theme, 'active')
             : getThemeColor(theme, 'default'),
         // 文字颜色适配背景
-        color: activeTheme === theme ? '#ffffff' : '#333333',
-        // hover态颜色（基于主色生成）
+        color: activeTheme === theme ? '#ffffff' : '#5c371e',
+        // hover态颜色（红棕色系过渡）
         '--hover-bg': getThemeColor(theme, 'hover'),
-        border: activeTheme === theme ? 'none' : '1px solid #e5e7eb',
+        border: activeTheme === theme ? 'none' : '1px solid #e8d8c8',
       }"
       @mouseenter="(e) => handleHover(e, 'enter')"
       @mouseleave="(e) => handleHover(e, 'leave', theme)"
@@ -71,7 +71,7 @@ const handleSelectTheme = (theme: string) => {
 };
 
 /**
- * 基于题材名生成固定的唯一颜色（避免刷新后变色）
+ * 基于题材名生成固定的红棕色系颜色（保持唯一性，仅在红棕色区间变化）
  * @param theme 题材名称
  * @param type 颜色类型（default/active/hover）
  * @returns 十六进制颜色值
@@ -80,26 +80,29 @@ const getThemeColor = (
   theme: string,
   type: "default" | "active" | "hover"
 ): string => {
-  // 基于题材名生成固定hash值（核心：保证同一题材颜色不变）
+  // 基于题材名生成固定hash值（保证同一题材颜色不变）
   const hash = theme.split("").reduce((acc, char) => {
     acc = (acc << 5) - acc + char.charCodeAt(0);
     return acc & acc; // 转为32位整数
   }, 0);
 
-  // 生成固定色相（偏向古风色系：红/蓝/绿/棕）
-  const hue = [0, 20, 120, 200, 280][Math.abs(hash) % 5];
-  // 不同状态的饱和度/亮度配置
+  // 红棕色系色相区间（10-40度，涵盖砖红、焦糖棕、红棕）
+  const baseHue = 20; // 基础红棕色色相
+  const hueOffset = [0, 5, 10, 15, 20][Math.abs(hash) % 5]; // 小范围偏移，保证红棕基调
+  const hue = baseHue + hueOffset; // 最终色相（20-40度）
+
+  // 红棕色系的饱和度/亮度配置（核心调整）
   const colorConfig = {
-    default: `hsl(${hue}, 30%, 95%)`, // 浅色背景（默认态）
-    active: `hsl(${hue}, 70%, 50%)`, // 深色主色（选中态）
-    hover: `hsl(${hue}, 40%, 90%)`, // 过渡色（hover态）
+    default: `hsl(${hue}, 30%, 95%)`, // 浅红棕背景（默认态）
+    active: `hsl(${hue}, 70%, 40%)`, // 深红棕主色（选中态，降低亮度更沉稳）
+    hover: `hsl(${hue}, 40%, 85%)`, // 红棕过渡色（hover态）
   };
 
   return colorConfig[type];
 };
 
 /**
- * 处理鼠标hover事件（避免TS6133报错：显式关联模板调用）
+ * 处理鼠标hover事件
  * @param e 鼠标事件
  * @param action 操作类型（enter/leave）
  * @param theme 题材名称
@@ -127,7 +130,7 @@ const handleHover = (
   }
 };
 
-// 显式暴露函数（关键：消除TS6133 "未使用" 报错）
+// 显式暴露函数（消除TS6133报错）
 defineExpose({
   handleSelectTheme,
   handleHover,

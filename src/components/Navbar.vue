@@ -22,7 +22,14 @@
           >
             录入诗歌
           </router-link>
-          <!-- 编辑页高亮（可选，因为编辑页是动态路由，这里仅做辅助） -->
+          <!-- 新增 AI 作诗导航 -->
+          <router-link
+            to="/ai-poem"
+            class="text-gray-700 hover:text-primary transition-colors"
+            :class="{ 'text-primary font-medium': $route.name === 'ai-poem' }"
+          >
+            AI 作诗
+          </router-link>
           <router-link
             v-if="$route.name === 'edit'"
             to=""
